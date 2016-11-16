@@ -18,12 +18,12 @@ This contract helps with this process by rewarding the richest player.
 
 1. A player sends ether to the contract address
 2. 
-     a. If the amount is too low it fails
-     b. If the amount at least +1 ETH is higher than the STAKE  
-          and send within PERIOD since the last pay-in  
-          then the sender receives the last STAKE but pays in his STAKE.  
-     c. If the grace PERIOD is over and nobody increased the STAKE, 
-     the last STAKE wins all the Ether, except one.
+     a. If the amount is too low it fails  
+     b. If the amount at least +1 ETH is higher than the STAKE    
+          and send within PERIOD since the last pay-in    
+          then the sender receives the last STAKE but pays in his STAKE.     
+     c. If the grace PERIOD is over and nobody increased the STAKE,   
+     the last STAKE wins all the Ether, except one.  
      
 ```     
                      
