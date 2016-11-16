@@ -18,21 +18,18 @@ This contract helps with this process by rewarding the richest player.
 
 1. A player sends ether to the contract address
 2. 
-     a. If the amount is too low it fails  
-     b. If the amount at least +1 ETH is higher than the STAKE    
-          and send within PERIOD since the last pay-in    
-          then the sender receives the last STAKE but pays in his STAKE.     
-     c. If the grace PERIOD is over and nobody increased the STAKE,   
-     the last STAKE wins all the Ether, except one.  
+  1. If the amount is too low it fails  
+  2. If the amount at least +1 ETH is higher than the STAKE and send within PERIOD since the last pay-in then the sender receives the last STAKE but pays in his STAKE.
+  3. If the grace PERIOD is over and nobody increased the STAKE, the last STAKE wins all the Ether, except one.  
      
-```     
-                     
-                     1ΞΞΞΞΞΞΞΞΞ*Period over
-             1ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ
-          2ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ      1ΞΞΞΞΞΞΞΞΞ*Period over
-          ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ  1ΞΞΞΞΞΞΞΞΞΞΞΞΞ
-     1ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ1ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ1ΞΞΞΞΞ...
-```
-     Figure: The STAKE gets higher until nobody pays in for > PERIOD
+     ```     
+         
+                          1ΞΞΞΞΞΞΞΞΞ*Period over
+                  1ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ
+               2ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ      1ΞΞΞΞΞΞΞΞΞ*Period over
+               ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ  1ΞΞΞΞΞΞΞΞΞΞΞΞΞ
+          1ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ1ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ1ΞΞΞΞΞ...
+     ```
+          Figure: The STAKE gets higher until nobody pays in for > PERIOD
 
 3. This one Ether is the basis for a new round. GOTO 1.
