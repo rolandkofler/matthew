@@ -1,5 +1,4 @@
 ## Mattew - a contract for increasing "whaleth"
-
 The rich get richer,  
 the WHALE get WHALER  
 ```
@@ -9,9 +8,9 @@ the WHALE get WHALER
 ┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
 ╰━━━━━━━━━━━━╯┈┈
 ```
-In sociology, the Matthew effect (or accumulated advantage) 
+> In sociology, the Matthew effect (or accumulated advantage) 
 is the phenomenon where "the rich get richer and the poor get poorer. 
-- https://en.wikipedia.org/wiki/Matthew_effect 
+--https://en.wikipedia.org/wiki/Matthew_effect 
 
 This contract helps with this process by rewarding the richest player.
 
