@@ -40,15 +40,17 @@ pragma solidity ^0.4.4;
  * 
  **/
  
+pragma solidity ^0.4.4;
+
 contract Mattew {
     address whale;
     uint256 stake;
     uint256 blockheight;
-    uint256 constant BLOCKS_PER_DAY= 86400 * 15;
-    uint256 constant PERIOD = 10 minutes; //BLOCKS_PER_DAY;
+    uint256 constant BLOCKS_PER_DAY= uint256(60 * 60 * 24 /14);
+    uint256 constant PERIOD = 43; //60 * 10 /14; //BLOCKS_PER_DAY;
     
-    event MattewWon(address winner, uint value,  uint blocknumber);
-    event StakeIncreased(address staker, uint value, uint blocknumber);
+    event MattewWon(string msg, address winner, uint value,  uint blocknumber);
+    event StakeIncreased(string msg, address staker, uint value, uint blocknumber);
     
     function Mattew(){
         setFacts();
@@ -64,8 +66,9 @@ contract Mattew {
     function () payable{
         if (block.number - PERIOD > blockheight){
             bool isSuccess = msg.sender.send(msg.value + stake);
-            MattewWon(msg.sender, stake, block.number);
+            MattewWon("Mattew won (mattew, stake, blockheight)", msg.sender, stake, block.number);
             setFacts();
+            selfdestruct(whale); //a gesture of responsibility 
             return;
             
         }else{
@@ -73,9 +76,10 @@ contract Mattew {
             if (msg.value < stake + 1 ether) throw;
             bool isOtherSuccess = whale.send(stake);
             setFacts();
-            StakeIncreased(whale, stake, blockheight);
+            StakeIncreased("stake increased (whale, stake, blockheight)", whale, stake, blockheight);
         }
     }
+    
     
     function getStake() public constant returns(uint){
         return stake;
