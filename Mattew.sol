@@ -39,8 +39,7 @@ pragma solidity ^0.4.4;
  * 3. Contract gets destroyed Experiment over.
  * 
  **/
- 
-pragma solidity ^0.4.4;
+
 
 contract Mattew {
     address whale;
