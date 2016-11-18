@@ -38,7 +38,7 @@ pragma solidity ^0.4.4;
  *      the last STAKE wins all the Ether
  * 3. Contract gets destroyed Experiment over.
  *
- * MIT LICENSE 2016 Roland Kofler
+ * MIT LICENSE 2016 Roland Kofler, thanks to Crul for testing
  **/
 
 
