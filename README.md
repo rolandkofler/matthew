@@ -21,7 +21,7 @@ This contract helps with this process by rewarding the richest player.
 1. A player sends ether to the contract address
 2. Flow:
   1. If the amount is too low it fails  
-  2. If the amount at least +0.1 ETH is higher than the STAKE and send within PERIOD since the last pay-in then the sender receives the last STAKE but pays in his STAKE.
+  2. If the new amount is at least equal to the  STAKE + 0.1 ETH and send within PERIOD (200 blocks) since the last pay-in then the sender receives the last STAKE but pays in his STAKE.
      ```     
          
                           1ΞΞΞΞΞΞΞΞΞ*Period over
