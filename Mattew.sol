@@ -62,11 +62,11 @@ contract Mattew {
         whale = msg.sender;
     }
     
-    /// The rich get richer, the wale get waler
+    /// The rich get richer, the whale get whaler
     function () payable{
         if (block.number - PERIOD > blockheight){
-            bool isSuccess = msg.sender.send(msg.value + stake);
-            MattewWon("Mattew won (mattew, stake, blockheight)", msg.sender, stake, block.number);
+            bool isSuccess = whale.send(stake);
+            MattewWon("Mattew won (mattew, stake, blockheight)", whale, stake, block.number);
             setFacts();
             selfdestruct(whale); //a gesture of responsibility 
             return;
