@@ -74,7 +74,7 @@ contract Mattew {
         }else{
             
             if (msg.value < stake + 1 ether) throw;
-            bool isOtherSuccess = whale.send(stake);
+            bool isOtherSuccess = msg.sender.send(stake);
             setFacts();
             StakeIncreased("stake increased (whale, stake, blockheight)", whale, stake, blockheight);
         }
