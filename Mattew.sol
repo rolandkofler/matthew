@@ -37,7 +37,8 @@ pragma solidity ^0.4.4;
  * 2c. If the grace PERIOD is over and nobody increased the STAKE, 
  *      the last STAKE wins all the Ether
  * 3. Contract gets destroyed Experiment over.
- * 
+ *
+ * MIT LICENSE 2016 Roland Kofler
  **/
 
 
@@ -46,7 +47,7 @@ contract Mattew {
     uint256 stake;
     uint256 blockheight;
     uint256 constant BLOCKS_PER_DAY= uint256(60 * 60 * 24 /14);
-    uint256 constant PERIOD = 43; //60 * 10 /14; //BLOCKS_PER_DAY;
+    uint256 constant PERIOD = 20; //60 * 10 /14; //BLOCKS_PER_DAY;
     
     event MattewWon(string msg, address winner, uint value,  uint blocknumber);
     event StakeIncreased(string msg, address staker, uint value, uint blocknumber);
