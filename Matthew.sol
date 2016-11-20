@@ -1,22 +1,23 @@
 pragma solidity ^0.4.4;
 
-// ## Mattew - a contract for increasing "whaleth"
-// README: https://github.com/rolandkofler/mattew
+// ## Matthew - a contract for increasing "whaleth"
+// README: https://github.com/rolandkofler/matthew
 // MIT LICENSE 2016 Roland Kofler, thanks to Crul for testing
 
-contract Mattew {
+contract Matthew {
     address owner;
     address whale;
     uint256 blockheight;
     uint256 period = 5; //BLOCKS_PER_DAY;
     uint constant DELTA = 0.1 ether;
+    uint constant WINNERTAX_PRECENT = 10;
     bool mustBeDestroyed = false;
     uint newPeriod = 5;
     
-    event MattewWon(string msg, address winner, uint value,  uint blocknumber);
+    event MatthewWon(string msg, address winner, uint value,  uint blocknumber);
     event StakeIncreased(string msg, address staker, uint value, uint blocknumber);
     
-    function Mattew(){
+    function Matthew(){
         owner = msg.sender;
         setFacts();
     }
@@ -29,18 +30,21 @@ contract Mattew {
     
     /// The rich get richer, the whale get whaler
     function () payable{
-        if (block.number - period >= blockheight){
-            bool isSuccess = whale.send(this.balance - DELTA);
-            MattewWon("Mattew won", whale, this.balance, block.number);
-            setFacts();
+    
+        if (block.number - period >= blockheight){ // time is over, Matthew won
+            bool isSuccess=false; //mutex against recursion attack
+            var nextStake = this.balance * WINNERTAX_PRECENT/100;  // leave some money for the next round
+            if (isSuccess == false) //check against recursion attack
+                isSuccess = whale.send(this.balance - nextStake); // pay out the stake
+            MatthewWon("Matthew won", whale, this.balance, block.number);
+            setFacts();//reset the game
             if (mustBeDestroyed) selfdestruct(whale); 
             return;
             
-        }else{
-            
-            if (msg.value < this.balance + DELTA) throw;
-            bool isOtherSuccess = msg.sender.send(this.balance);
-            setFacts();
+        }else{ // top the stake
+            if (msg.value < this.balance + DELTA) throw; // you must rise the stake by Delta
+            bool isOtherSuccess = msg.sender.send(this.balance); // give back the old stake
+            setFacts(); //reset the game
             StakeIncreased("stake increased", whale, this.balance, blockheight);
         }
     }
@@ -59,8 +63,8 @@ contract Mattew {
         period;
     }
     
-    //how long until a Mattew wins?
-    function getBlocksTillMattew() public constant returns(uint){
+    //how long until a Matthew wins?
+    function getBlocksTillMatthew() public constant returns(uint){
         if (blockheight + period > block.number)
             return blockheight + period - block.number;
         else
