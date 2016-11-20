@@ -1,6 +1,6 @@
-> WARNING: While the whale looks friendly, Mattew is a nasty animal. Because of human [Loss Aversion](https://en.wikipedia.org/wiki/Loss_aversion), people might play higher and higher stakes. THIS IS AN EXPERIMENT IN BEHAVIORAL ECONOMICS. Do not stake Ether you will miss later! THIS CONTRACT IS NOT SECURE AND COULD BE HACKED. BY USING IT YOU AGREE THAT ANY RISK IS ON YOU.
+> WARNING: While the whale looks friendly, Matthew is a nasty animal. Because of human [Loss Aversion](https://en.wikipedia.org/wiki/Loss_aversion), people might play higher and higher stakes. THIS IS AN EXPERIMENT IN BEHAVIORAL ECONOMICS. Do not stake Ether you will miss later! THIS CONTRACT IS NOT SECURE AND COULD BE HACKED. BY USING IT YOU AGREE THAT ANY RISK IS ON YOU.
 
-## Mattew - a contract for increasing "whaleth"
+## Matthew - a contract for increasing "whaleth"
 The rich get richer,  
 the WHALE get WHALER  
 ```
