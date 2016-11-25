@@ -1,4 +1,4 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.6;
 
 // ## Matthew - a contract for increasing "whaleth"
 // README: https://github.com/rolandkofler/matthew
@@ -8,11 +8,11 @@ contract Matthew {
     address owner;
     address whale;
     uint256 blockheight;
-    uint256 period = 5; //BLOCKS_PER_DAY;
+    uint256 period = 40; //180 blocks ~ 42 min, 300 blocks ~ 1h 10 min;
     uint constant DELTA = 0.1 ether;
     uint constant WINNERTAX_PRECENT = 10;
     bool mustBeDestroyed = false;
-    uint newPeriod = 5;
+    uint newPeriod = period;
     
     event MatthewWon(string msg, address winner, uint value,  uint blocknumber);
     event StakeIncreased(string msg, address staker, uint value, uint blocknumber);
@@ -60,7 +60,15 @@ contract Matthew {
     }
     
     function getPeriod() constant returns (uint){
-        period;
+        return period;
+    }
+    
+    function getNewPeriod() constant returns (uint){
+        return newPeriod;
+    }
+    
+    function getDestroyedWhenRoundOver() constant returns (bool){
+        return mustBeDestroyed;
     }
     
     //how long until a Matthew wins?
