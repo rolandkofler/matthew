@@ -21,30 +21,46 @@
     <![endif]-->
   </head>
   <body>
-    
+
     <div class="container">
       <div class="header clearfix">
         <h3 class="text-muted">Matthew <small>- a contract for increasing "whaleth"</small></h3>
       </div>
 
       <div class="jumbotron">
-        <h1>0 blocks till Matthew 0xMattewWhaleISThe98998 winns 90 Ether...</h1>
-        <p class="lead">...if you don't top it with at least 90.1 Ether</p>
-        <p>Oh no, I will play 
-          <input type="numeric" class="" length="5" value = "90.1"/> 
-          Ether and receive 90 ETH back instantly. <a class="btn btn-lg btn-success" href="#" role="button">Pay In</a></p>
+        <h1><span id="blocksTillMatthew">_</span><small> blocks till </small>
+          <span id="matthew">0x____</span><small id="matthewrest">____________________________________</small>
+          <small> wins</small>
+          <span> __ </span>
+          <small>Ether ...</small>
+        </h1>
+        <pre>
+          <code>
+          ╭━━━━━━━━╮┏━╮╭━┓
+          ┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
+          ┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
+          ┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
+          ╰━━━━━━━━━━━━╯┈┈
+          </code>
+        </pre>
+        <h1 class="lead"><small>...if you don't top it with at least </small><span id="newstake">90.1</span> <small>Ether</small></h1>
+        <form class= "form-inline">Oh no, I will play
+          <input type="number" size="4" value = "90.1"/>
+          Ether and receive 90 ETH back instantly. <a class="btn btn-lg btn-success" href="#" role="button">Pay In</a></form>
       </div>
 
       <div class="row marketing">
         <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+          <p>Your Account</p>
+          <h4 id="account">loading</h4>
 
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+          <p>Your Balance</p>
+          <h4 id="balance">loading</h4>
 
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+          <p>Ethereum Network</p>
+          <h4 id="ethereumnetwork">loading</h4>
+
+
         </div>
 
         <div class="col-lg-6">
@@ -68,12 +84,75 @@
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
-  
+
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
+    <script >
+    window.addEventListener('load', function() {
+
+      // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+      if (typeof web3 !== 'undefined') {
+        // Use Mist/MetaMask's provider
+        web3 = new Web3(web3.currentProvider);
+        console.log('MetaMask ready')
+      } else {
+        console.log('No web3? You should consider trying MetaMask!')
+        // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+      }
+     //start app
+
+      updateInterface = function(){
+        if (!matthew) throw "no matthew contract loaded";
+        matthew.getBlocksTillMatthew.call(function(error, result){
+          if (error) throw error;
+          $("#blocksTillMatthew").html(result.c[0]);
+        });
+
+        matthew.whale.call(function(error, result){
+          if (error) throw error;
+          $("#matthew").html(result.substring(0, 6));
+          $("#matthewrest").html(result.substring(6,result.length));
+        });
+
+        web3.eth.getAccounts(function(error, result){
+          if (error) throw error;
+          $("#account").html(result[0]);
+
+          web3.eth.getBalance(result[0], "latest", function(error, result){
+            if (error) throw error;
+            $("#balance").html(web3.fromWei(result, "ether").toString().concat(" Ether"));
+          })
+        });
+
+        web3.version.getNetwork(function(error, result){
+          if (error) throw error;
+          var netname = "Unknown Net: "+ result;
+          switch(Number(result)){
+            case 1: netname= "Mainnet"; break;
+            case 2: netname= "Morden Testnet"; break;
+            case 3: netname= "Ropsten Testnet"; break;
+          };
+          $("#ethereumnetwork").html(netname);
+        });
+
+        console.log("interface updated");
+      }
+
+      matthewContract = web3.eth.contract([{"constant":true,"inputs":[],"name":"getNewPeriod","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getPeriod","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"WINNERTAX_PRECENT","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"stake","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getBlocksTillMatthew","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getDestroyedWhenRoundOver","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"whale","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"destroyWhenRoundOver","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"DELTA","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newPeriod","type":"uint256"}],"name":"setNewPeriod","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"blockheight","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":false,"name":"msg","type":"string"},{"indexed":false,"name":"winner","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"blocknumber","type":"uint256"}],"name":"MatthewWon","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"msg","type":"string"},{"indexed":false,"name":"staker","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"blocknumber","type":"uint256"}],"name":"StakeIncreased","type":"event"}]);
+      matthew = matthewContract.at("0x75aa81161e07483f6ca199fef46c13eb13d190be");
+      var accountInterval = setInterval(function() {
+         updateInterface();
+
+      }, 500);
+
+
+
+    })
+    </script>
   </body>
 </html>
