@@ -28,13 +28,16 @@
       </div>
 
       <div class="jumbotron">
-        <h1><span id="blocksTillMatthew">_</span><small> blocks till </small>
-          <span id="matthew">0x____</span><small id="matthewrest">____________________________________</small>
+        <h1>
+          <small>Only </small>
+          <span id="blocksTillMatthew">_</span><small> blocks until </small>
+          <small>0x</small><span id="matthew">____</span>
           <small> wins</small>
           <span id="stake"> __.__ </span>
           <small>Ether<sup><a href="#" data-toggle="tooltip" data-trigger="click hover" title="includes a 10% fee for having a stake for the next round">*</a></sup> ...</small>
+          <small>...if you don't top it with at least </small><span id="atleaststake">__.__</span> <small>Ether</small>
         </h1>
-        <h1 class="lead"><small>...if you don't top it with at least </small><span id="atleaststake">__.__</span> <small>Ether</small></h1>
+
         <pre>
           ╭━━━━━━━━╮┏━╮╭━┓
           ┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
@@ -45,10 +48,11 @@
 
         <form class= "form-inline">
           <h1><small>Oh no, I will play</small>
-          <input class="" type="number" size="4" style="width: 200px;" value = "90.1"/>
+          <!--<input class="" type="number" size="4" style="width: 200px;" value = "90.1"/>-->
+          <span id="willpay">__</span>
           <small>Ether and receive <span id="payback">90</span> ETH back instantly.</small>
         </h1>
-        <a class="btn btn-lg btn-success" href="#" role="button">Pay In</a>
+        <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay In With Metamask</a> or from a wallet using <span id="mattAddr"></span>
         </form>
       </div>
 
@@ -62,24 +66,16 @@
 
           <p>Ethereum Network</p>
           <h4 id="ethereumnetwork">loading</h4>
-
-
         </div>
 
         <div class="col-lg-6">
-          <h4>Subheading</h4>Sign up today
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+          <p>Current Mattew's full Address</p>
+          <h4 id="fullmatthew">loading</h4>
         </div>
       </div>
-
+      <hr/>
       <footer class="footer">
-        <p>&copy; 2016 Company, Inc.</p>
+        <p>Source code on <a href="https://github.com/rolandkofler/Matthew">Github</a></p>
       </footer>
 
     </div> <!-- /container -->
@@ -108,7 +104,20 @@
         web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
       }
      //start app
+      mattAddress= "0x75aa81161e07483f6ca199fef46c13eb13d190be";
+      $("#mattAddr").html(mattAddress);
+      var currentPayment= 0;
 
+      pay = function(){
+        if (!currentPayment) throw "current payment is undef";
+        tx = {from:web3.eth.accounts[0], to: mattAddress, value: web3.toWei(currentPayment, "ether")};
+        console.log(tx);
+        web3.eth.sendTransaction(tx, function (error, address){
+          if (error) throw error;
+          console.log("paid %s to %s", currentPayment, mattAddress);
+        });
+
+      };
       updateInterface = function(){
         if (!matthew) throw "no matthew contract loaded";
         matthew.getBlocksTillMatthew.call(function(error, result){
@@ -118,8 +127,9 @@
 
         matthew.whale.call(function(error, result){
           if (error) throw error;
-          $("#matthew").html(result.substring(0, 6));
-          $("#matthewrest").html(result.substring(6,result.length));
+          $("#matthew").html(result.substring(2, 6));
+          $("#fullmatthew").html(result);
+
         });
 
         matthew.stake.call(function(error, result){
@@ -127,7 +137,9 @@
           var stake = web3.fromWei(result, "ether");
           $("#stake").html(stake.times(0.9).toNumber());
           $("#payback").html(stake.toNumber());
-          $("#atleaststake").html(stake.add(0.1).toNumber());
+          currentPayment = stake.add(0.1).toNumber()
+          $("#atleaststake").html(currentPayment);
+          $("#willpay").html(currentPayment);
         });
 
         web3.eth.getAccounts(function(error, result){
@@ -155,7 +167,7 @@
       }
 
       matthewContract = web3.eth.contract([{"constant":true,"inputs":[],"name":"getNewPeriod","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getPeriod","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"WINNERTAX_PRECENT","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"stake","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getBlocksTillMatthew","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getDestroyedWhenRoundOver","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"whale","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"destroyWhenRoundOver","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"DELTA","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newPeriod","type":"uint256"}],"name":"setNewPeriod","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"blockheight","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":false,"name":"msg","type":"string"},{"indexed":false,"name":"winner","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"blocknumber","type":"uint256"}],"name":"MatthewWon","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"msg","type":"string"},{"indexed":false,"name":"staker","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"blocknumber","type":"uint256"}],"name":"StakeIncreased","type":"event"}]);
-      matthew = matthewContract.at("0x75aa81161e07483f6ca199fef46c13eb13d190be");
+      matthew = matthewContract.at(mattAddress);
       var accountInterval = setInterval(function() {
          updateInterface();
 
