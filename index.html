@@ -31,22 +31,25 @@
         <h1><span id="blocksTillMatthew">_</span><small> blocks till </small>
           <span id="matthew">0x____</span><small id="matthewrest">____________________________________</small>
           <small> wins</small>
-          <span> __ </span>
-          <small>Ether ...</small>
+          <span id="stake"> __.__ </span>
+          <small>Ether<sup><a href="#" data-toggle="tooltip" data-trigger="click hover" title="includes a 10% fee for having a stake for the next round">*</a></sup> ...</small>
         </h1>
+        <h1 class="lead"><small>...if you don't top it with at least </small><span id="atleaststake">__.__</span> <small>Ether</small></h1>
         <pre>
-          <code>
           ╭━━━━━━━━╮┏━╮╭━┓
           ┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
           ┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
           ┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
           ╰━━━━━━━━━━━━╯┈┈
-          </code>
         </pre>
-        <h1 class="lead"><small>...if you don't top it with at least </small><span id="newstake">90.1</span> <small>Ether</small></h1>
-        <form class= "form-inline">Oh no, I will play
-          <input type="number" size="4" value = "90.1"/>
-          Ether and receive 90 ETH back instantly. <a class="btn btn-lg btn-success" href="#" role="button">Pay In</a></form>
+
+        <form class= "form-inline">
+          <h1><small>Oh no, I will play</small>
+          <input class="" type="number" size="4" style="width: 200px;" value = "90.1"/>
+          <small>Ether and receive <span id="payback">90</span> ETH back instantly.</small>
+        </h1>
+        <a class="btn btn-lg btn-success" href="#" role="button">Pay In</a>
+        </form>
       </div>
 
       <div class="row marketing">
@@ -110,13 +113,21 @@
         if (!matthew) throw "no matthew contract loaded";
         matthew.getBlocksTillMatthew.call(function(error, result){
           if (error) throw error;
-          $("#blocksTillMatthew").html(result.c[0]);
+          $("#blocksTillMatthew").html(result.toNumber());
         });
 
         matthew.whale.call(function(error, result){
           if (error) throw error;
           $("#matthew").html(result.substring(0, 6));
           $("#matthewrest").html(result.substring(6,result.length));
+        });
+
+        matthew.stake.call(function(error, result){
+          if (error) throw error;
+          var stake = web3.fromWei(result, "ether");
+          $("#stake").html(stake.times(0.9).toNumber());
+          $("#payback").html(stake.toNumber());
+          $("#atleaststake").html(stake.add(0.1).toNumber());
         });
 
         web3.eth.getAccounts(function(error, result){
