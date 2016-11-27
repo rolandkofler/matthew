@@ -24,31 +24,32 @@
 
     <div class="container">
       <div class="header clearfix">
-        <h3 class="text-muted">Matthew <small>- a contract for increasing "whaleth"</small></h3>
+        <h1 class="text-muted">Matthew <small>- a contract for increasing "whaleth"</small></h1>
       </div>
-
       <div class="jumbotron">
+        <div class="text-right" style="float:right;">
+        <pre>
+╭━━━━━━━━╮┏━╮╭━┓
+┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
+┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
+┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
+╰━━━━━━━━━━━━╯┈┈
+        </pre></div>
         <h1>
           <strong id="blocksTillMatthew">_</strong> blocks until<br>
           <small>0x</small><strong id="matthew">____</strong> wins
-          <strong id="stake"> __.__ </strong> Ether<sup><a href="#" data-toggle="tooltip" data-trigger="click hover" title="includes a 10% fee for having a stake for the next round">*</a></sup><br>
+          <strong id="stake"> __.__ </strong> Ether<sup>
+            <a href="#" data-toggle="tooltip" data-trigger="click hover" title="includes a 10% fee for having a stake for the next round">*</a></sup><br>
           <small>if you don't top it.</small>
         </h1>
 
-        <pre>
-          ╭━━━━━━━━╮┏━╮╭━┓
-          ┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
-          ┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
-          ┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
-          ╰━━━━━━━━━━━━╯┈┈
-        </pre>
-
         <form class= "form-inline">
-          <h2>
+          <h2 style="line-height: 150%">
           Oh no, I will pay<br>
           <!--<input class="" type="number" size="4" style="width: 200px;" value = "90.1"/>-->
-          <strong id="willpay">__</strong> Ether and receive <br>
-          <span id="payback">90</span> Ether back instantly, so I will pay only 0.1 ETH at the end.
+          <strong id="willpay">__</strong> Ether, but <br>
+          <span id="payback">90</span> Ether are returned to me instantly,<br>
+          <small>so I will <strong>always pay only 0.1 ETH</strong> at last.</small>
           </h2>
         <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay In With Metamask</a> or from a wallet using <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" id="mattAddr"></a>
         </form>
@@ -56,6 +57,7 @@
 
       <div class="row marketing">
         <div class="col-lg-6">
+
           <p>Your Account</p>
           <h4 id="account">loading</h4>
 
@@ -63,7 +65,9 @@
           <h4 id="balance">loading</h4>
 
           <p>Periods</p>
-          <h4>current: <span id="period">___</span> next: <span id="newperiod">___</span></h4>
+          <h4>current <span id="period">___</span>, next <span id="newperiod">___</span></h4>
+
+
 
         </div>
 
@@ -77,11 +81,13 @@
           <p>Ethereum Network</p>
           <h4 id="ethereumnetwork">loading</h4>
 
+
         </div>
       </div>
       <hr/>
       <footer class="footer">
         <p>Source code on <a href="https://github.com/rolandkofler/Matthew">Github</a></p>
+
       </footer>
 
     </div> <!-- /container -->
