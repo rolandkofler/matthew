@@ -23,6 +23,14 @@
   <body>
 
     <div class="container">
+      <div class="alert alert-danger alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4>WARNING: While the whale looks friendly, Matthew is a nasty animal. </h4>
+        <p>THIS IS AN EXPERIMENT IN BEHAVIORAL ECONOMICS. Do not stake Ether you will miss later!</p>
+        <p>THIS CONTRACT IS NOT SECURE AND COULD BE HACKED. BY USING IT YOU AGREE THAT ANY RISK IS ON YOU.</p>
+      </div>
       <div class="header clearfix">
         <h1 class="text-muted">Matthew <small>- a contract for increasing "whaleth"</small></h1>
       </div>
@@ -42,17 +50,20 @@
             <a href="#" data-toggle="tooltip" data-trigger="click hover" title="includes a 10% fee for having a stake for the next round">*</a></sup><br>
           <small>if you don't top it.</small>
         </h1>
-
-        <form class= "form-inline">
+        <hr>
+        <div>
           <h2 style="line-height: 150%">
           Oh no, I will pay<br>
           <!--<input class="" type="number" size="4" style="width: 200px;" value = "90.1"/>-->
-          <strong id="willpay">__</strong> Ether, but <br>
-          <span id="payback">90</span> Ether are returned to me instantly,<br>
-          <small>so I will <strong>always pay only 0.1 ETH</strong> at last.</small>
+          <strong id="willpay">__</strong> Ether, but
+          <span id="payback">90</span> Ether are returned to me instantly.<br>
+          <small>I will <strong>always pay only 0.1 ETH</strong> at last.</small>
           </h2>
-        <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay In With Metamask</a> or from a wallet using <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" id="mattAddr"></a>
-        </form>
+        </div>
+        <hr>
+        <div class="row">
+            <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay With Metamask</a> <span>&nbsp;&nbsp; or from a wallet by sending Ether to <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" id="mattAddr"></a></span>
+        </div>
       </div>
 
       <div class="row marketing">
