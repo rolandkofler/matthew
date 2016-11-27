@@ -113,6 +113,7 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
+    <script src="lib/web3.min.js" type="text/javascript"></script>
     <script >
     window.addEventListener('load', function() {
 
@@ -122,9 +123,10 @@
         web3 = new Web3(web3.currentProvider);
         console.log('MetaMask ready')
       } else {
+
         console.log('No web3? You should consider trying MetaMask!')
         // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/4TdcSx2orDpViXyHXQfK"));
       }
      //start app
       mattAddress= "0x75aa81161e07483f6ca199fef46c13eb13d190be";
