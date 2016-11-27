@@ -29,13 +29,12 @@
 
       <div class="jumbotron">
         <h1>
-          <small>Only </small>
-          <span id="blocksTillMatthew">_</span><small> blocks until </small>
-          <small>0x</small><span id="matthew">____</span>
-          <small> wins</small>
-          <span id="stake"> __.__ </span>
-          <small>Ether<sup><a href="#" data-toggle="tooltip" data-trigger="click hover" title="includes a 10% fee for having a stake for the next round">*</a></sup> ...</small>
-          <small>...if you don't top it with at least </small><span id="atleaststake">__.__</span> <small>Ether</small>
+          <small>Only<br>
+          <strong id="blocksTillMatthew">_</strong> blocks until<br>
+          <small>0x</small><strong id="matthew">____</strong> wins
+          <strong id="stake"> __.__ </strong> Ether<sup><a href="#" data-toggle="tooltip" data-trigger="click hover" title="includes a 10% fee for having a stake for the next round">*</a></sup>,<br>
+          <small>if you don't top it with at least </small><span id="atleaststake">__.__</span> <small>Ether</small>
+          </small>
         </h1>
 
         <pre>
@@ -47,12 +46,14 @@
         </pre>
 
         <form class= "form-inline">
-          <h1><small>Oh no, I will play</small>
+          <h1>
+          <small>Oh no, I will pay<br>
           <!--<input class="" type="number" size="4" style="width: 200px;" value = "90.1"/>-->
-          <span id="willpay">__</span>
-          <small>Ether and receive <span id="payback">90</span> ETH back instantly.</small>
+          <span id="willpay">__</span> Ether and receive <br>
+          <span id="payback">90</span> ETH back instantly.
+        </small>
         </h1>
-        <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay In With Metamask</a> or from a wallet using <span id="mattAddr"></span>
+        <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay In With Metamask</a> or from a wallet using <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" id="mattAddr"></a>
         </form>
       </div>
 
@@ -64,13 +65,19 @@
           <p>Your Balance</p>
           <h4 id="balance">loading</h4>
 
-          <p>Ethereum Network</p>
-          <h4 id="ethereumnetwork">loading</h4>
+
         </div>
 
         <div class="col-lg-6">
-          <p>Current Mattew's full Address</p>
+          <p>Current Winner's full Address</p>
           <h4 id="fullmatthew">loading</h4>
+
+          <p>Current Block</p>
+          <h4 id="blockheight">loading</h4>
+
+          <p>Ethereum Network</p>
+          <h4 id="ethereumnetwork">loading</h4>
+
         </div>
       </div>
       <hr/>
@@ -162,6 +169,12 @@
           };
           $("#ethereumnetwork").html(netname);
         });
+
+       web3.eth.getBlockNumber(function(error, result){
+         if (error) throw error;
+
+         $("#blockheight").html(result);
+       });
 
         console.log("interface updated");
       }
