@@ -29,12 +29,10 @@
 
       <div class="jumbotron">
         <h1>
-          <small>Only<br>
           <strong id="blocksTillMatthew">_</strong> blocks until<br>
           <small>0x</small><strong id="matthew">____</strong> wins
-          <strong id="stake"> __.__ </strong> Ether<sup><a href="#" data-toggle="tooltip" data-trigger="click hover" title="includes a 10% fee for having a stake for the next round">*</a></sup>,<br>
-          <small>if you don't top it with at least </small><span id="atleaststake">__.__</span> <small>Ether</small>
-          </small>
+          <strong id="stake"> __.__ </strong> Ether<sup><a href="#" data-toggle="tooltip" data-trigger="click hover" title="includes a 10% fee for having a stake for the next round">*</a></sup><br>
+          <small>if you don't top it.</small>
         </h1>
 
         <pre>
@@ -46,13 +44,12 @@
         </pre>
 
         <form class= "form-inline">
-          <h1>
-          <small>Oh no, I will pay<br>
+          <h2>
+          Oh no, I will pay<br>
           <!--<input class="" type="number" size="4" style="width: 200px;" value = "90.1"/>-->
-          <span id="willpay">__</span> Ether and receive <br>
-          <span id="payback">90</span> ETH back instantly.
-        </small>
-        </h1>
+          <strong id="willpay">__</strong> Ether and receive <br>
+          <span id="payback">90</span> Ether back instantly, so I will pay only 0.1 ETH at the end.
+          </h2>
         <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay In With Metamask</a> or from a wallet using <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" id="mattAddr"></a>
         </form>
       </div>
@@ -65,6 +62,8 @@
           <p>Your Balance</p>
           <h4 id="balance">loading</h4>
 
+          <p>Periods</p>
+          <h4>current: <span id="period">___</span> next: <span id="newperiod">___</span></h4>
 
         </div>
 
@@ -157,6 +156,19 @@
             if (error) throw error;
             $("#balance").html(web3.fromWei(result, "ether").toString().concat(" Ether"));
           })
+        });
+
+        matthew.getPeriod.call(function(error, result){
+          if (error) throw error;
+          $("#period").html(result.toNumber());
+
+
+        });
+
+        matthew.getNewPeriod.call(function(error, result){
+          if (error) throw error;
+          $("#newperiod").html(result.toNumber());
+
         });
 
         web3.version.getNetwork(function(error, result){
