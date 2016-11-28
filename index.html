@@ -39,22 +39,16 @@
         </nav>
         <h1 class="text-muted">Matthew <small>- a contract for increasing "whaleth"</small></h1>
       </div>
-      <div class="jumbotron">
-        <div class="text-right" style="float:right;">
-        <pre>
-╭━━━━━━━━╮┏━╮╭━┓
-┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
-┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
-┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
-╰━━━━━━━━━━━━╯┈┈
-        </pre></div>
+      <div class="jumbotron" id="jumbo">
         <h1>
           <strong id="blocksTillMatthew">_</strong> blocks until<br>
           <small>0x</small><strong id="matthew">____</strong> wins
           <strong id="stake"> __.__ </strong> Ether<sup>
-            <a href="#" data-toggle="tooltip" data-trigger="click hover" title="includes a 10% fee for having a stake for the next round">*</a></sup><br>
+            <a style="text-decoration: none;"  data-toggle="tooltip" data-trigger="hover click" title="includes a 10% fee used as first stake for the next round" data-placement="right" >*</a>
+            </sup><br>
           <small>if you don't top it.</small>
         </h1>
+
         <hr>
         <div>
           <h2 style="line-height: 150%">
@@ -67,7 +61,7 @@
         </div>
         <hr>
         <div class="row">
-            <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay With Metamask</a> <span>&nbsp;&nbsp; or from a wallet by sending Ether to <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" id="mattAddr"></a></span>
+            <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay With Metamask</a> <span>&nbsp;&nbsp; or from a wallet by sending Ether to <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" class="mattAddr"></a></span>
         </div>
       </div>
 
@@ -103,8 +97,36 @@
       <hr/>
       <footer class="footer">
         <p>Source code on <a href="https://github.com/rolandkofler/Matthew">Github</a></p>
-
       </footer>
+
+  <div id="matthewWonDialog" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Matthew won!</h3>
+      </div>
+      <div class="modal-body row">
+        <div class="col-md-8">
+        <h4>Anybody who sends <strong>zero or more Ether to the Contract</strong> will trigger the payout.</h4>
+        <p>Tip: paying more than (<span class="tax"></span> + 0.1) ETH means you are staking for the next round.</p>
+        <p>Pay to the Matthew Address: <em class="mattAddr"></em></p>
+      </div>
+      <div class="text-right" class="col-md-1">
+        <pre>
+  ╭━━━━━━━━╮┏━╮╭━┓
+  ┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
+  ┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
+  ┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
+  ╰━━━━━━━━━━━━╯┈┈
+        </pre></div>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Settle With Metamask</a>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
     </div> <!-- /container -->
 
@@ -134,8 +156,9 @@
         web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/4TdcSx2orDpViXyHXQfK"));
       }
      //start app
+      $("[data-toggle=tooltip]").tooltip({ 'container': 'body' });
       mattAddress= "0x75aa81161e07483f6ca199fef46c13eb13d190be";
-      $("#mattAddr").html(mattAddress);
+      $(".mattAddr").html(mattAddress);
       var currentPayment= 0;
 
       pay = function(){
@@ -152,7 +175,10 @@
         if (!matthew) throw "no matthew contract loaded";
         matthew.getBlocksTillMatthew.call(function(error, result){
           if (error) throw error;
-          $("#blocksTillMatthew").html(result.toNumber());
+          var blocksLeft = result.toNumber();
+          if (blocksLeft == 0) $('#matthewWonDialog').modal('show');
+          else $('#matthewWonDialog').modal('hide');
+          $("#blocksTillMatthew").html(blocksLeft);
         });
 
         matthew.whale.call(function(error, result){
@@ -166,6 +192,7 @@
           if (error) throw error;
           var stake = web3.fromWei(result, "ether");
           $("#stake").html(stake.times(0.9).toNumber());
+          $(".tax").html(stake.times(0.1).toNumber());
           $("#payback").html(stake.toNumber());
           currentPayment = stake.add(0.1).toNumber()
           $("#atleaststake").html(currentPayment);
@@ -220,7 +247,7 @@
       var accountInterval = setInterval(function() {
          updateInterface();
 
-      }, 500);
+      }, 2000);
 
 
 
