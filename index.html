@@ -23,14 +23,6 @@
   <body>
 
     <div class="container">
-      <div class="alert alert-danger alert-dismissible fade in" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4>WARNING: While the whale looks friendly, Matthew is a nasty animal. </h4>
-        <p>THIS IS AN EXPERIMENT IN BEHAVIORAL ECONOMICS. Do not stake Ether you will miss later!</p>
-        <p>THIS CONTRACT IS NOT SECURE AND COULD BE HACKED. BY USING IT YOU AGREE THAT ANY RISK IS ON YOU.</p>
-      </div>
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills pull-right">
@@ -99,37 +91,55 @@
         <p>Source code on <a href="https://github.com/rolandkofler/Matthew">Github</a></p>
       </footer>
 
-  <div id="matthewWonDialog" class="modal fade" tabindex="-1" role="dialog">
+<div id="matthewWonDialog" class="modal fade" tabindex="-1" role="dialog">
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h3 class="modal-title">Matthew won!</h3>
+    </div>
+    <div class="modal-body row">
+      <div class="col-md-8">
+      <h4>Anybody who sends <strong>zero or more Ether to the Contract</strong> will trigger the payout.</h4>
+      <p>Tip: paying more than (<span class="tax"></span> + 0.1) ETH means you are staking for the next round.</p>
+      <p>Pay to the Matthew Address: <em class="mattAddr"></em></p>
+    </div>
+    <div class="text-right" class="col-md-1">
+      <pre>
+╭━━━━━━━━╮┏━╮╭━┓
+┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
+┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
+┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
+╰━━━━━━━━━━━━╯┈┈
+      </pre></div>
+    </div>
+    <div class="modal-footer">
+      <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Settle With Metamask</a>
+    </div>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="warningDialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title">Matthew won!</h3>
+        <h3 class="modal-title">WARNING: <small>While the whale looks friendly, Matthew is a nasty animal.</small></h3>
       </div>
-      <div class="modal-body row">
-        <div class="col-md-8">
-        <h4>Anybody who sends <strong>zero or more Ether to the Contract</strong> will trigger the payout.</h4>
-        <p>Tip: paying more than (<span class="tax"></span> + 0.1) ETH means you are staking for the next round.</p>
-        <p>Pay to the Matthew Address: <em class="mattAddr"></em></p>
-      </div>
-      <div class="text-right" class="col-md-1">
-        <pre>
-  ╭━━━━━━━━╮┏━╮╭━┓
-  ┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
-  ┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
-  ┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
-  ╰━━━━━━━━━━━━╯┈┈
-        </pre></div>
+      <div class="modal-body">
+        <p>THIS IS AN EXPERIMENT IN BEHAVIORAL ECONOMICS. Do not stake Ether you will miss later! </p>
+        <p>THIS CONTRACT IS NOT SECURE AND COULD BE HACKED. BY USING IT YOU AGREE THAT ANY RISK IS ON YOU.</p>
       </div>
       <div class="modal-footer">
-        <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Settle With Metamask</a>
+        <a href="https://www.reddit.com/r/ethereum/" type="button" class="btn btn-default" >Get me out of here</a>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">OK I risk it</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-    </div> <!-- /container -->
-
+</div> <!-- /container -->
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
@@ -157,6 +167,7 @@
       }
      //start app
       $("[data-toggle=tooltip]").tooltip({ 'container': 'body' });
+      $('#warningDialog').modal('show');
       mattAddress= "0x75aa81161e07483f6ca199fef46c13eb13d190be";
       $(".mattAddr").html(mattAddress);
       var currentPayment= 0;
