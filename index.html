@@ -55,6 +55,18 @@
         <div class="row">
             <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay With Metamask</a> <span>&nbsp;&nbsp; or from a wallet by sending Ether to <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" class="mattAddr"></a></span>
         </div>
+     </div>
+
+      <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Events</div>
+        <div class="panel-body">
+          <p>Reverse History of Events</p>
+        </div>
+
+        <!-- List group -->
+        <ul id="events" class="list-group">
+        </ul>
       </div>
 
       <div class="row marketing">
@@ -123,17 +135,27 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="warningDialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header alert alert-danger">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title">WARNING: <small>While the whale looks friendly, Matthew is a nasty animal.</small></h3>
+        <h3 class="modal-title">WARNING: <small >While the whale looks friendly, Matthew is a nasty animal.</small></h3>
       </div>
+      <div class="text-right" class="col-md-1">
+        <pre>
+  ╭━━━━━━━━╮┏━╮╭━┓
+  ┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
+  ┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
+  ┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
+  ╰━━━━━━━━━━━━╯┈┈
+        </pre>
+      </div>
+
       <div class="modal-body">
         <p>THIS IS AN EXPERIMENT IN BEHAVIORAL ECONOMICS. Do not stake Ether you will miss later! </p>
         <p>THIS CONTRACT IS NOT SECURE AND COULD BE HACKED. BY USING IT YOU AGREE THAT ANY RISK IS ON YOU.</p>
       </div>
       <div class="modal-footer">
         <a href="https://www.reddit.com/r/ethereum/" type="button" class="btn btn-default" >Get me out of here</a>
-        <button type="button" class="btn btn-primary" data-dismiss="modal">OK I risk it</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">OK I risk it</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -182,7 +204,8 @@
         });
 
       };
-      updateInterface = function(){
+
+      var updateInterface = function(){
         if (!matthew) throw "no matthew contract loaded";
         matthew.getBlocksTillMatthew.call(function(error, result){
           if (error) throw error;
@@ -260,6 +283,20 @@
 
       }, 2000);
 
+      // watch for an event with
+      //var events = matthew.allEvents({fromBlock: 0, toBlock: 'latest'});
+
+      var addMatthewEvent = function(event) {
+          $('#events').append('<li class="list-group-item">'+event+'</li>');
+      };
+
+      // would get all past logs again.
+      //events.get(function(error, logs){
+      //  if (error) throw error;
+      //  $.each(logs, function(index,log) {
+      //      addMatthewEvent(log.args.msg);
+      //  });
+      //});
 
 
     })
