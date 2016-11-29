@@ -26,6 +26,8 @@
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills pull-right">
+            <li role="presentation"><a href="https://github.com/rolandkofler/Matthew">Sources</a></li>
+            <li role="presentation"><a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract">Deployed Contract</a></li>
             <li role="presentation"><a href="https://github.com/rolandkofler/matthew/blob/master/README.md">Help</a></li>
           </ul>
         </nav>
@@ -36,9 +38,11 @@
           <strong id="blocksTillMatthew">_</strong> blocks until<br>
           <small>0x</small><strong id="matthew">____</strong> wins
           <strong id="stake"> __.__ </strong> Ether<sup>
-            <a style="text-decoration: none;"  data-toggle="tooltip" data-trigger="hover click" title="includes a 10% fee used as first stake for the next round" data-placement="right" >*</a>
-            </sup><br>
-          <small>if you don't top it.</small>
+            <small><small>
+            <a style="text-decoration: none;"  data-toggle="tooltip" data-trigger="hover click" title="includes a 10% fee used as first stake for the next round" data-placement="right" >10% fee</a>
+           </small></small>
+          </sup><br>
+         <small>if you don't top it.</small>
         </h1>
 
         <hr>
@@ -53,21 +57,9 @@
         </div>
         <hr>
         <div class="row">
-            <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Pay With Metamask</a> <span>&nbsp;&nbsp; or from a wallet by sending Ether to <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" class="mattAddr"></a></span>
+            <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay(currentPayment);">Pay With Metamask</a> <span>&nbsp;&nbsp; or from a wallet by sending Ether to <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" class="mattAddr"></a></span>
         </div>
      </div>
-
-      <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading">Events</div>
-        <div class="panel-body">
-          <p>Reverse History of Events</p>
-        </div>
-
-        <!-- List group -->
-        <ul id="events" class="list-group">
-        </ul>
-      </div>
 
       <div class="row marketing">
         <div class="col-lg-6">
@@ -99,6 +91,18 @@
         </div>
       </div>
       <hr/>
+      <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Events</div>
+        <div class="panel-body">
+          <p>Reverse History of Events</p>
+        </div>
+
+        <!-- List group -->
+        <ul id="events" class="list-group">
+        </ul>
+      </div>
+
       <footer class="footer">
         <p>Source code on <a href="https://github.com/rolandkofler/Matthew">Github</a></p>
       </footer>
@@ -126,7 +130,7 @@
       </pre></div>
     </div>
     <div class="modal-footer">
-      <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay();">Settle With Metamask</a>
+      <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay(0);">Settle With Metamask</a>
     </div>
   </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
@@ -194,13 +198,13 @@
       $(".mattAddr").html(mattAddress);
       var currentPayment= 0;
 
-      pay = function(){
-        if (!currentPayment) throw "current payment is undef";
-        tx = {from:web3.eth.accounts[0], to: mattAddress, value: web3.toWei(currentPayment, "ether")};
+      pay = function(amount){
+        if (amount !=0 && !amount) throw amount + " amount is undef";
+        tx = {from:web3.eth.accounts[0], to: mattAddress, value: web3.toWei(amount, "ether")};
         console.log(tx);
         web3.eth.sendTransaction(tx, function (error, address){
           if (error) throw error;
-          console.log("paid %s to %s", currentPayment, mattAddress);
+          console.log("paid %s to %s", amount, mattAddress);
         });
 
       };
@@ -210,8 +214,12 @@
         matthew.getBlocksTillMatthew.call(function(error, result){
           if (error) throw error;
           var blocksLeft = result.toNumber();
-          if (blocksLeft == 0) $('#matthewWonDialog').modal('show');
-          else $('#matthewWonDialog').modal('hide');
+          if (blocksLeft == 0) {
+              $('#matthewWonDialog').modal('show');
+          }
+          else {
+              $('#matthewWonDialog').modal('hide');
+          }
           $("#blocksTillMatthew").html(blocksLeft);
         });
 
@@ -284,19 +292,40 @@
       }, 2000);
 
       // watch for an event with
-      //var events = matthew.allEvents({fromBlock: 0, toBlock: 'latest'});
+      var events = matthew.allEvents({fromBlock: 0, toBlock: 'latest'});
 
       var addMatthewEvent = function(event) {
-          $('#events').append('<li class="list-group-item">'+event+'</li>');
+          var log = "unknown";
+          var prefix = "Block "+event.blockNumber+" &ndash; ";
+          switch (event.event){
+            case "MatthewWon":
+             log = prefix + "<a href='https://etherscan.io/address/"+event.args.winner+"'> <b>" + event.args.winner.substring(2,6) + "</b></a> is the new Matthew, he won <b>"+web3.fromWei(event.args.value, "ether").toString()+" ETH</b>";
+            break;
+            case "StakeIncreased":
+             log = prefix + "<a href='https://etherscan.io/address/"+event.args.winner+"'> <b>" + event.args.staker.substring(2,6) + "</b></a>  increased the stake by <b>"+web3.fromWei(event.args.value, "ether").toString()+" ETH</b>";
+            break;
+            default:
+             console.error("unknown event", event);
+          }
+
+          $('#events').prepend('<li class="list-group-item">'+log+'</li>');
       };
 
       // would get all past logs again.
-      //events.get(function(error, logs){
-      //  if (error) throw error;
-      //  $.each(logs, function(index,log) {
-      //      addMatthewEvent(log.args.msg);
-      //  });
-      //});
+      events.get(function(error, logs){
+        if (error) throw error;
+
+        $.each(logs, function(index,log) {
+            addMatthewEvent(log);
+        });
+
+        events.watch(function(error, event){
+          if (error) throw error;
+          addMatthewEvent(event);
+
+        });
+
+      });
 
 
     })
