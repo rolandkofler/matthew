@@ -294,12 +294,15 @@
       // watch for an event with
       var events = matthew.allEvents({fromBlock: 0, toBlock: 'latest'});
 
+
       var addMatthewEvent = function(event) {
           var log = "unknown";
           var prefix = "Block "+event.blockNumber+" &ndash; ";
+          var style = "";
           switch (event.event){
             case "MatthewWon":
              log = prefix + "<a href='https://etherscan.io/address/"+event.args.winner+"'> <b>" + event.args.winner.substring(2,6) + "</b></a> is the new Matthew, he won <b>"+web3.fromWei(event.args.value, "ether").toString()+" ETH</b>";
+             style= "list-group-item-success";
             break;
             case "StakeIncreased":
              log = prefix + "<a href='https://etherscan.io/address/"+event.args.winner+"'> <b>" + event.args.staker.substring(2,6) + "</b></a>  increased the stake by <b>"+web3.fromWei(event.args.value, "ether").toString()+" ETH</b>";
@@ -308,7 +311,7 @@
              console.error("unknown event", event);
           }
 
-          $('#events').prepend('<li class="list-group-item">'+log+'</li>');
+          $('#events').prepend('<li class="list-group-item '+style+'">'+log+'</li>');
       };
 
       // would get all past logs again.
