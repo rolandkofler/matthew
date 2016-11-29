@@ -39,7 +39,7 @@
           <small>0x</small><strong id="matthew">____</strong> wins
           <strong id="stake"> __.__ </strong> Ether<sup>
             <small><small>
-            <a style="text-decoration: none;"  data-toggle="tooltip" data-trigger="hover click" title="includes a 10% fee used as first stake for the next round" data-placement="right" >10% fee</a>
+            <a style="text-decoration: none;"  data-toggle="tooltip" data-trigger="hover click" title="used as first stake for the next round" data-placement="right" >10% fee</a>
            </small></small>
           </sup><br>
          <small>if you don't top it.</small>
@@ -57,7 +57,7 @@
         </div>
         <hr>
         <div class="row">
-            <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay(currentPayment);">Pay With Metamask</a> <span>&nbsp;&nbsp; or from a wallet by sending Ether to <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" class="mattAddr"></a></span>
+            <button id="payButton" class="btn btn-lg btn-success" href="#" role="button" data-loading-text="Sending..." >Pay With Metamask</button> <span>&nbsp;&nbsp; or from a wallet by sending Ether to <a href="https://etherscan.io/address/0x75aa81161e07483f6ca199fef46c13eb13d190be#readContract" target="_etherscan" class="mattAddr"></a></span>
         </div>
      </div>
 
@@ -130,7 +130,7 @@
       </pre></div>
     </div>
     <div class="modal-footer">
-      <a class="btn btn-lg btn-success" href="#" role="button" onclick="pay(0);">Settle With Metamask</a>
+      <a id="settlementButton" class="btn btn-lg btn-success" href="#" role="button" >Settle With Metamask</a>
     </div>
   </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
@@ -141,19 +141,20 @@
     <div class="modal-content">
       <div class="modal-header alert alert-danger">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title">WARNING: <small >While the whale looks friendly, Matthew is a nasty animal.</small></h3>
+        <h3 class="modal-title">WARNING</h3>
+        <h4><strong> While the whale looks friendly, Matthew is a nasty animal</strong></h4>
       </div>
       <div class="text-right" class="col-md-1">
         <pre>
-  ╭━━━━━━━━╮┏━╮╭━┓
-  ┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
-  ┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
-  ┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
-  ╰━━━━━━━━━━━━╯┈┈
+                            ╭━━━━━━━━╮┏━╮╭━┓
+          HI, I'm Matthew   ┃┈┈┈┈┈┈┈┈┃╰╮╰╯╭╯
+            Wanna play      ┃╰╯┈┈┈┈┈┈╰╮╰╮╭╯┈
+                with me?    ┣━━╯┈┈┈┈┈┈╰━╯┃┈┈
+                            ╰━━━━━━━━━━━━╯┈┈
         </pre>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body alert alert-danger">
         <p>THIS IS AN EXPERIMENT IN BEHAVIORAL ECONOMICS. Do not stake Ether you will miss later! </p>
         <p>THIS CONTRACT IS NOT SECURE AND COULD BE HACKED. BY USING IT YOU AGREE THAT ANY RISK IS ON YOU.</p>
       </div>
@@ -178,6 +179,29 @@
 
     <script src="lib/web3.min.js" type="text/javascript"></script>
     <script >
+    function SortedAsyncCaller(callFn, callbackFn) {
+    	var caller = this;
+    	caller.counter = 0;
+    	caller.lastReturnedCall = -1;
+    	caller.callFn = callFn;
+    	caller.callbackFn = callbackFn;
+    	caller.execute = executeCall;
+
+    	function executeCall() {
+    		(function(callIndex){
+    			callFn(function(error, result) {
+    				if (callIndex < caller.lastReturnedCall)
+    					return;
+
+    				caller.lastReturnedCall = callIndex;
+    				callbackFn(error, result);
+    			});
+    		})(caller.counter);
+
+    		caller.counter++;
+    	}
+    }
+
     window.addEventListener('load', function() {
 
       // Checking if Web3 has been injected by the browser (Mist/MetaMask)
@@ -198,20 +222,50 @@
       $(".mattAddr").html(mattAddress);
       currentPayment= 0;
 
-      pay = function(amount){
+      $('#payButton').on('click', function () {
+          var $btn = $(this).button('loading')
+          pay(currentPayment, $btn);
+      });
+
+      $('#settlementButton').on('click', function () {
+          var $btn = $(this).button('loading')
+          pay(0, $btn);
+      });
+
+      pay = function(amount, btn){
         if (amount !=0 && !amount) throw amount + " amount is undef";
         tx = {from:web3.eth.accounts[0], to: mattAddress, value: web3.toWei(amount, "ether")};
-        console.log(tx);
+        console.log("do transaction",tx);
         web3.eth.sendTransaction(tx, function (error, address){
           if (error) throw error;
           console.log("paid %s to %s", amount, mattAddress);
+          btn.button('reset');
         });
-
       };
+
 
       var updateInterface = function(){
         if (!matthew) throw "no matthew contract loaded";
-        matthew.getBlocksTillMatthew.call(function(error, result){
+
+        getBlocksTillMathewCaller.execute();
+        getWhaleCaller.execute();
+        getStakeCaller.execute();
+        getPeriodCaller.execute();
+        getNewPeriodCaller.execute();
+        getNetworkCaller.execute();
+        getAccountCaller.execute();
+        getBlockNumberCaller.execute();
+
+      }
+
+      matthewContract = web3.eth.contract([{"constant":true,"inputs":[],"name":"getNewPeriod","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getPeriod","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"WINNERTAX_PRECENT","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"stake","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getBlocksTillMatthew","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getDestroyedWhenRoundOver","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"whale","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"destroyWhenRoundOver","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"DELTA","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newPeriod","type":"uint256"}],"name":"setNewPeriod","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"blockheight","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":false,"name":"msg","type":"string"},{"indexed":false,"name":"winner","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"blocknumber","type":"uint256"}],"name":"MatthewWon","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"msg","type":"string"},{"indexed":false,"name":"staker","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"blocknumber","type":"uint256"}],"name":"StakeIncreased","type":"event"}]);
+      matthew = matthewContract.at(mattAddress);
+
+      var getBlocksTillMathewCaller = new SortedAsyncCaller
+      (
+      	matthew.getBlocksTillMatthew.call,
+
+      	function(error, result){
           if (error) throw error;
           var blocksLeft = result.toNumber();
           if (blocksLeft == 0) {
@@ -221,16 +275,23 @@
               $('#matthewWonDialog').modal('hide');
           }
           $("#blocksTillMatthew").html(blocksLeft);
-        });
+        }
+      );
 
-        matthew.whale.call(function(error, result){
+      var getWhaleCaller = new SortedAsyncCaller
+      (
+        matthew.whale.call,
+        function(error, result){
           if (error) throw error;
           $("#matthew").html(result.substring(2, 6));
           $("#fullmatthew").html(result);
+        }
+      );
 
-        });
-
-        matthew.stake.call(function(error, result){
+      var getStakeCaller = new SortedAsyncCaller
+      (
+        matthew.stake.call,
+        function(error, result){
           if (error) throw error;
           var stake = web3.fromWei(result, "ether");
           $("#stake").html(stake.times(0.9).toNumber());
@@ -239,9 +300,13 @@
           currentPayment = stake.add(0.1).toNumber()
           $("#atleaststake").html(currentPayment);
           $("#willpay").html(currentPayment);
-        });
+        }
+      );
 
-        web3.eth.getAccounts(function(error, result){
+      var getAccountCaller = new SortedAsyncCaller
+      (
+        web3.eth.getAccounts,
+        function(error, result){
           if (error) throw error;
           $("#account").html(result[0]);
 
@@ -249,22 +314,31 @@
             if (error) throw error;
             $("#balance").html(web3.fromWei(result, "ether").toString().concat(" Ether"));
           })
-        });
+        }
+      );
 
-        matthew.getPeriod.call(function(error, result){
+      var getPeriodCaller = new SortedAsyncCaller
+      (
+        matthew.getPeriod.call,
+        function(error, result){
           if (error) throw error;
           $("#period").html(result.toNumber());
+        }
+      );
 
-
-        });
-
-        matthew.getNewPeriod.call(function(error, result){
+      var getNewPeriodCaller = new SortedAsyncCaller
+      (
+        matthew.getNewPeriod.call,
+        function(error, result){
           if (error) throw error;
           $("#newperiod").html(result.toNumber());
+        }
+      );
 
-        });
-
-        web3.version.getNetwork(function(error, result){
+      var getNetworkCaller = new SortedAsyncCaller
+      (
+        web3.version.getNetwork,
+        function(error, result){
           if (error) throw error;
           var netname = "Unknown Net: "+ result;
           switch(Number(result)){
@@ -273,19 +347,18 @@
             case 3: netname= "Ropsten Testnet"; break;
           };
           $("#ethereumnetwork").html(netname);
-        });
+        }
+      );
 
-       web3.eth.getBlockNumber(function(error, result){
+     var getBlockNumberCaller = new SortedAsyncCaller
+     (
+       web3.eth.getBlockNumber,
+       function(error, result){
          if (error) throw error;
-
          $("#blockheight").html(result);
-       });
+       }
+     );
 
-        console.log("interface updated");
-      }
-
-      matthewContract = web3.eth.contract([{"constant":true,"inputs":[],"name":"getNewPeriod","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getPeriod","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"WINNERTAX_PRECENT","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"stake","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getBlocksTillMatthew","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getDestroyedWhenRoundOver","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"whale","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"destroyWhenRoundOver","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"DELTA","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newPeriod","type":"uint256"}],"name":"setNewPeriod","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"blockheight","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":false,"name":"msg","type":"string"},{"indexed":false,"name":"winner","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"blocknumber","type":"uint256"}],"name":"MatthewWon","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"msg","type":"string"},{"indexed":false,"name":"staker","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"blocknumber","type":"uint256"}],"name":"StakeIncreased","type":"event"}]);
-      matthew = matthewContract.at(mattAddress);
       var accountInterval = setInterval(function() {
          updateInterface();
 
@@ -305,7 +378,7 @@
              style= "list-group-item-success";
             break;
             case "StakeIncreased":
-             log = prefix + "<a href='https://etherscan.io/address/"+event.args.winner+"'> <b>" + event.args.staker.substring(2,6) + "</b></a>  increased the stake by <b>"+web3.fromWei(event.args.value, "ether").toString()+" ETH</b>";
+             log = prefix + "<a href='https://etherscan.io/address/"+event.args.staker+"'> <b>" + event.args.staker.substring(2,6) + "</b></a>  increased the stake by <b>"+web3.fromWei(event.args.value, "ether").toString()+" ETH</b>";
             break;
             default:
              console.error("unknown event", event);
