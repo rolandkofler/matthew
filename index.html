@@ -34,6 +34,7 @@
         <h1 class="text-muted">Matthew <small><sup>beta</sup> - a contract for increasing "whaleth"</small></h1>
       </div>
       <div class="jumbotron" id="jumbo">
+        <p><small>> <span id="lastEvent"><span></small></p>
         <h1>
           <strong id="blocksTillMatthew">_</strong> blocks until<br>
           <small>0x</small><strong id="matthew">____</strong> wins
@@ -385,6 +386,7 @@
           }
 
           $('#events').prepend('<li class="list-group-item '+style+'">'+log+'</li>');
+          $("#lastEvent").html(log);
       };
 
       // would get all past logs again.
