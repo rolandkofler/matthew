@@ -9,7 +9,7 @@ contract Matthew {
     address public whale;
     uint256 public blockheight;
     uint256 public stake;
-    uint256 period = 40; //180 blocks ~ 42 min, 300 blocks ~ 1h 10 min;
+    uint256 period = 600; //180 blocks ~ 42 min, 300 blocks ~ 1h 10 min;
     uint constant DELTA = 0.1 ether;
     uint constant WINNERTAX_PRECENT = 10;
     bool mustBeDestroyed = false;
@@ -44,7 +44,8 @@ contract Matthew {
             return;
             
         }else{ // top the stake
-            if (msg.value < stake + DELTA) throw; // you must rise the stake by Delta
+            if (msg.sender.balance < stake) throw; // proof of stake
+            if (msg.value < DELTA) throw; // you must rise the stake by Delta
             bool isOtherSuccess = msg.sender.send(stake); // give back the old stake
             setFacts(); //reset the game
             StakeIncreased("stake increased", whale, stake, blockheight);
@@ -58,6 +59,7 @@ contract Matthew {
     
     // next round we set a new staking perioud
     function setNewPeriod(uint _newPeriod) onlyOwner{
+        if (_newPeriod < 180) throw;
         newPeriod = _newPeriod;
     }
     
